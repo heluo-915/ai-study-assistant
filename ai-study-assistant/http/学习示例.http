@@ -1,0 +1,80 @@
+@baseUrl = http://localhost:8080
+@username = 请填写新用户名
+@password = 请填写测试密码
+@token = 请粘贴登录令牌
+@noteId = 1
+@quizId = 1
+@sessionId = 1
+
+### 1. 注册
+POST {{baseUrl}}/register
+Content-Type: application/json
+
+{"username":"{{username}}","password":"{{password}}"}
+
+### 2. 登录；复制响应 token 到上方 @token
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{"username":"{{username}}","password":"{{password}}"}
+
+### 3. 上传当前目录下的合成示例文件，复制 noteId
+POST {{baseUrl}}/notes/upload
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=StudyBoundary
+
+--StudyBoundary
+Content-Disposition: form-data; name="title"
+
+紫杉学习法
+--StudyBoundary
+Content-Disposition: form-data; name="file"; filename="example.txt"
+Content-Type: text/plain; charset=utf-8
+
+< ./example.txt
+--StudyBoundary--
+
+### 4. 基于资料提问
+POST {{baseUrl}}/notes/chunks/ask
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"message":"紫杉学习法有哪些步骤？"}
+
+### 5. 生成一道题，复制返回的 quizId
+POST {{baseUrl}}/notes/{{noteId}}/quiz
+Authorization: Bearer {{token}}
+
+### 6. 查看题目，不显示答案
+GET {{baseUrl}}/quiz/{{quizId}}
+Authorization: Bearer {{token}}
+
+### 7. 提交答案，选项请根据实际题目修改
+POST {{baseUrl}}/quiz/{{quizId}}/answer
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"answer":"A"}
+
+### 8. 查询最近一次答错的题目
+GET {{baseUrl}}/quiz/wrong?latestCorrect=false
+Authorization: Bearer {{token}}
+
+### 9. 创建会话，复制返回的数字到 @sessionId
+POST {{baseUrl}}/chat/sessions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"title":"学习会话"}
+
+### 10. 会话流式对话
+POST {{baseUrl}}/chat/sessions/{{sessionId}}/messages/stream
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: text/event-stream
+
+{"message":"请用一句话解释 Java 接口。"}
+
+### 11. 查看本题作答记录
+GET {{baseUrl}}/quiz/{{quizId}}/attempts
+Authorization: Bearer {{token}}

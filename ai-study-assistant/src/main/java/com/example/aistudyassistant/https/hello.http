@@ -1,0 +1,124 @@
+@token = your-token-here
+@password = your-password-here
+
+### 测试 POST 请求
+POST http://localhost:8080/hello
+Content-Type: application/json
+
+{
+  "name": "test"
+}
+###
+### 测试不传名字
+POST http://localhost:8080/hello
+Content-Type: application/json
+
+{"name":"   "}
+### 检查应用到数据库的连接
+GET http://localhost:8080/database-check
+### 查询用户数量
+GET http://localhost:8080/users/count
+
+### 注册用户
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{
+  "username": "student02",
+  "password": "{{password}}"
+}
+
+### 用户名为空
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{
+  "username": "",
+  "password": "{{password}}"
+}
+### 验证登录
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "username": "student01",
+  "password": "{{password}}"
+}
+### 不携带令牌
+GET http://localhost:8080/profile
+### 携带令牌访问
+GET http://localhost:8080/profile
+Authorization: Bearer {{token}}
+### 测试无效令牌
+GET http://localhost:8080/profile
+Authorization: Bearer invalid-token
+### 不带令牌创建笔记
+POST http://localhost:8080/notes
+Content-Type: application/json
+
+{
+  "title": "MyBatis 学习",
+  "content": "学习 Mapper 如何执行 SQL"
+}
+### 携带令牌创建笔记
+POST http://localhost:8080/notes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "chifan 学习",
+  "content": "学习 chifan 如何执行 SQL"
+}
+### 查询我的笔记
+GET http://localhost:8080/notes
+Authorization: Bearer {{token}}
+
+### 查询我的三号笔记
+GET http://localhost:8080/notes/2
+Authorization: Bearer {{token}}
+### 向 DeepSeek 提问
+POST http://localhost:8080/chat
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "message": "我的学习代号是什么？"
+}
+### 比较两段文本的语义相似度
+POST http://localhost:8080/embedding/similarity
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "textA": "Java 接口定义了类需要实现的方法",
+  "textB": "今天晚上准备吃火锅"
+}
+### 创建笔记并生成向量
+POST http://localhost:8080/notes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "向量检索测试",
+  "content": "向量检索可以根据语义相似度查找相关内容。"
+}
+###
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+"username": "student01",
+"password": "{{password}}"
+}
+
+### 测试文件上传
+POST http://localhost:8080/notes/upload
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=MyBoundary
+
+--MyBoundary
+Content-Disposition: form-data; name="file"; filename="upload-test.txt"
+Content-Type: text/plain
+
+< D:/Projects/mySecondProject/ai-study-assistant/upload-test.txt
+--MyBoundary--

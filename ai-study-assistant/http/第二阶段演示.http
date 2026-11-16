@@ -1,0 +1,51 @@
+@base = http://localhost:8080
+@token = your-token-here
+@noteId = 1
+@jobId = 1
+@taskId = 1
+
+### 上传 UTF-8 文本：立即返回 noteId 和 jobId，后台生成向量与片段
+POST {{base}}/notes/upload-async
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=DemoBoundary
+
+--DemoBoundary
+Content-Disposition: form-data; name="title"
+
+演示学习资料
+--DemoBoundary
+Content-Disposition: form-data; name="file"; filename="example.txt"
+Content-Type: text/plain
+
+< ./example.txt
+--DemoBoundary--
+
+### 查询后台任务状态
+GET {{base}}/chunk-jobs/{{jobId}}
+Authorization: Bearer {{token}}
+
+### 失败后重试
+POST {{base}}/chunk-jobs/{{jobId}}/retry
+Authorization: Bearer {{token}}
+
+### 生成今日复习任务（先对一道题答错）
+POST {{base}}/study/tasks/generate
+Authorization: Bearer {{token}}
+
+### 查看今日计划
+GET {{base}}/study/tasks
+Authorization: Bearer {{token}}
+
+### 标记任务完成
+PUT {{base}}/study/tasks/{{taskId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"completed": true}
+
+### 模型可按需选择笔记、错题与统计工具
+POST {{base}}/study/assistant
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"message": "请查看我的答题统计，并给我一个简短复习建议。"}

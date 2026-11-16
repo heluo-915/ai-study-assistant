@@ -1,0 +1,23 @@
+@base = http://localhost:8080
+@token = your-token-here
+@noteId = 1
+
+### 为当前用户尚未登记的旧笔记片段安排回填
+POST {{base}}/notes/vector-sync/backfill
+Authorization: Bearer {{token}}
+
+### 为当前用户指定笔记安排重新同步
+POST {{base}}/notes/{{noteId}}/vector-sync
+Authorization: Bearer {{token}}
+
+### 查看指定笔记的同步状态和重试信息
+GET {{base}}/notes/{{noteId}}/vector-sync
+Authorization: Bearer {{token}}
+
+### 手动重试失败的任务
+POST {{base}}/notes/{{noteId}}/vector-sync/retry
+Authorization: Bearer {{token}}
+
+### 继续使用已有的笔记片段搜索接口
+GET {{base}}/notes/chunks/search?question=Java接口
+Authorization: Bearer {{token}}
