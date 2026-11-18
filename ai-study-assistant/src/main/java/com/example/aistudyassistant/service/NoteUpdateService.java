@@ -12,12 +12,12 @@ public class NoteUpdateService {
     private final NoteChunkService chunks;
     private final NoteUpdatePersistenceService persistence;
 
-    public NoteUpdateService(NoteMapper notes, NoteEmbeddingService embeddings,
+    /* 保存笔记查询、向量准备和事务写入所需的依赖。 */ public NoteUpdateService(NoteMapper notes, NoteEmbeddingService embeddings,
                              NoteChunkService chunks, NoteUpdatePersistenceService persistence) {
         this.notes=notes; this.embeddings=embeddings; this.chunks=chunks; this.persistence=persistence;
     }
 
-    public int update(Long userId, Long noteId, String title, String content) {
+    /* 先读取本人笔记并准备新向量和片段，再交由持久化服务校验更新。 */ public int update(Long userId, Long noteId, String title, String content) {
         Note snapshot=notes.findByIdAndUserId(userId,noteId);
         if (snapshot==null) return 0;
         String vector=embeddings.prepareEmbedding(content);

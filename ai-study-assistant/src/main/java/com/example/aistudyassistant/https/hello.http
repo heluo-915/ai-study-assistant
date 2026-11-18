@@ -117,8 +117,8 @@ Authorization: Bearer {{token}}
 Content-Type: multipart/form-data; boundary=MyBoundary
 
 --MyBoundary
-Content-Disposition: form-data; name="file"; filename="upload-test.txt"
+Content-Disposition: form-data; name="file"; filename="example.txt"
 Content-Type: text/plain
 
-< D:/Projects/mySecondProject/ai-study-assistant/upload-test.txt
+< D:/Projects/mySecondProject/ai-study-assistant/http/example.txt
 --MyBoundary--

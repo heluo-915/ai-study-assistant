@@ -13,6 +13,7 @@ public class NoteChunkSyncService {
     private final NoteChunkPreviewService previewService;
     private final NoteChunkVectorService vectorService;
 
+    // 初始化 NoteChunkSyncService 实例。
     public NoteChunkSyncService(
             NoteChunkPreviewService previewService,
             NoteChunkVectorService vectorService

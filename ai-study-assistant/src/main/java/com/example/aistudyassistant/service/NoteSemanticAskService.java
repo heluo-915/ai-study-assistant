@@ -12,6 +12,7 @@ public class NoteSemanticAskService {
     private final NoteSemanticSearchService noteSemanticSearchService;
     private final ChatService chatService;
 
+    // 初始化 NoteSemanticAskService 实例。
     public NoteSemanticAskService(NoteSemanticSearchService noteSemanticSearchService, ChatService chatService) {
         this.noteSemanticSearchService = noteSemanticSearchService;
         this.chatService = chatService;

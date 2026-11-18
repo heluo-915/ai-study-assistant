@@ -9,9 +9,11 @@ import java.util.Map;
 public class StudyAssistantService {
     private final ChatClient client;
     private final StudyAssistantTools tools;
+    // 初始化 StudyAssistantService 实例。
     public StudyAssistantService(ChatModel model, StudyAssistantTools tools) {
         this.client=ChatClient.create(model); this.tools=tools;
     }
+    // 为当前用户调用学习助手，并提供只读工具及身份上下文。
     public String ask(Long userId, String question) {
         try {
             String answer=client.prompt()

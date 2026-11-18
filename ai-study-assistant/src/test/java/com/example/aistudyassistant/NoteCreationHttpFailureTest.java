@@ -44,6 +44,7 @@ class NoteCreationHttpFailureTest {
     private String username;
     private Long userId;
 
+    // 启动测试使用的代理服务。
     private static HttpServer startProxy() {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
@@ -55,6 +56,7 @@ class NoteCreationHttpFailureTest {
         }
     }
 
+    // 处理测试代理收到的请求。
     private static void proxy(HttpExchange exchange) throws IOException {
         try {
             byte[] requestBody = exchange.getRequestBody().readAllBytes();
@@ -86,11 +88,13 @@ class NoteCreationHttpFailureTest {
         }
     }
 
+    // 为测试配置模拟的 Ollama 服务地址。
     @DynamicPropertySource
     static void configureOllama(DynamicPropertyRegistry registry) {
         registry.add("spring.ai.ollama.base-url", () -> "http://127.0.0.1:" + OLLAMA_PROXY.getAddress().getPort());
     }
 
+    // 创建供测试使用的用户。
     @BeforeEach
     void createUser() {
         EMBEDDING_REQUESTS.set(0);
@@ -101,6 +105,7 @@ class NoteCreationHttpFailureTest {
         userId = jdbcTemplate.queryForObject("SELECT id FROM users WHERE username = ?", Long.class, username);
     }
 
+    // 清理本次测试创建的数据。
     @AfterEach
     void cleanup() {
         if (username != null) {
@@ -109,11 +114,13 @@ class NoteCreationHttpFailureTest {
         }
     }
 
+    // 关闭测试代理服务。
     @AfterAll
     static void stopProxy() {
         OLLAMA_PROXY.stop(0);
     }
 
+    // 发送测试请求创建笔记。
     private HttpResponse<String> createNote() throws Exception {
         String body = new JsonMapper().writeValueAsString(java.util.Map.of(
                 "title", "普通创建测试", "content", "这是用于验证普通创建故障处理的笔记。"));

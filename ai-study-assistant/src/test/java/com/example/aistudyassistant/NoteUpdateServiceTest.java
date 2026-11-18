@@ -14,10 +14,12 @@ class NoteUpdateServiceTest {
     private final NoteUpdatePersistenceService persistence=mock(NoteUpdatePersistenceService.class);
     private final NoteUpdateService service=new NoteUpdateService(notes,embeddings,chunks,persistence);
 
+    // 验证笔记不存在时不会调用模型。
     @Test void missingNoteDoesNotCallModels() {
         assertEquals(0,service.update(1L,2L,"标题","正文"));
         verifyNoInteractions(embeddings,chunks,persistence);
     }
+    // 验证模型调用失败时不会持久化更新。
     @Test void modelFailureDoesNotPersist() {
         Note note=new Note(); note.setTitle("旧标题"); note.setContent("旧正文");
         when(notes.findByIdAndUserId(1L,2L)).thenReturn(note);
@@ -26,6 +28,7 @@ class NoteUpdateServiceTest {
         assertThrows(IllegalStateException.class,() -> service.update(1L,2L,"新标题","新正文"));
         verifyNoInteractions(persistence);
     }
+    // 验证准备好的数据和原始快照传递给持久化服务。
     @Test void preparedDataAndOriginalSnapshotReachPersistence() {
         Note note=new Note(); note.setTitle("旧标题"); note.setContent("旧正文");
         when(notes.findByIdAndUserId(1L,2L)).thenReturn(note);

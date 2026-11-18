@@ -21,6 +21,7 @@ class PdfChineseExtractionTest {
     private final PdfTextExtractor extractor = new PdfTextExtractor();
     private static final File CHINESE_FONT = new File("C:/Windows/Fonts/simhei.ttf");
 
+    // 构造测试使用的文本数据。
     private static void text(PDPageContentStream stream, PDType0Font font, float x, float y, String value) throws IOException {
         stream.beginText(); stream.setFont(font, 13); stream.newLineAtOffset(x, y); stream.showText(value); stream.endText();
     }

@@ -13,6 +13,7 @@ public class QuizAnswerController {
     private static final Set<String> ANSWERS = Set.of("A", "B", "C", "D");
     private final QuizAnswerService quizAnswerService;
 
+    // 初始化 QuizAnswerController 实例。
     public QuizAnswerController(QuizAnswerService quizAnswerService) { this.quizAnswerService = quizAnswerService; }
 
     // 只接受 A、B、C、D，题目不存在或不属于当前用户时返回 404。

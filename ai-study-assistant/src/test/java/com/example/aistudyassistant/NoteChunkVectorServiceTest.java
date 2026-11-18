@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class NoteChunkVectorServiceTest {
+    // 验证写入内容、用户元数据以及稳定且不同的向量 ID。
     @Test
     void savesContentAndOwnerMetadataWithStableDistinctIds() {
         VectorStore store = mock(VectorStore.class);

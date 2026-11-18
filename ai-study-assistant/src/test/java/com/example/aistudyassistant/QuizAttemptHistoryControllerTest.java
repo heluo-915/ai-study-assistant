@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class QuizAttemptHistoryControllerTest {
+    // 验证登录、题目归属和空作答历史。
     @Test
     void checksLoginOwnershipAndEmptyHistory() throws Exception {
         QuizAttemptHistoryService service = mock(QuizAttemptHistoryService.class);

@@ -14,6 +14,7 @@ public class QuizReviewService {
     private final QuizQuestionMapper mapper;
     private final JsonMapper jsonMapper = new JsonMapper();
 
+    // 初始化 QuizReviewService 实例。
     public QuizReviewService(QuizQuestionMapper mapper) { this.mapper = mapper; }
 
     // 只读取有权查看的题干和选项。

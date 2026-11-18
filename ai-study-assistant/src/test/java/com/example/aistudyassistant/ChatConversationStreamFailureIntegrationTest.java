@@ -32,6 +32,7 @@ class ChatConversationStreamFailureIntegrationTest {
     private Long userId;
     private Long sessionId;
 
+    // 设置up 字段。
     @BeforeEach
     void setup() {
         username = "stream_failure_" + UUID.randomUUID().toString().substring(0, 8);
@@ -41,6 +42,7 @@ class ChatConversationStreamFailureIntegrationTest {
         sessionId = jdbc.queryForObject("SELECT id FROM chat_sessions WHERE user_id=?", Long.class, userId);
     }
 
+    // 清理本次测试创建的数据。
     @AfterEach
     void cleanup() {
         if (sessionId != null) {
@@ -50,6 +52,7 @@ class ChatConversationStreamFailureIntegrationTest {
         if (username != null) jdbc.update("DELETE FROM users WHERE username=?", username);
     }
 
+    // 验证第二条消息插入失败时第一条消息也会回滚。
     @Test
     void failedSecondInsertRollsBackFirstMessage() {
         // 直接测试保存层的事务边界，绕过流层的长度检查以触发数据库写入失败。
@@ -57,6 +60,7 @@ class ChatConversationStreamFailureIntegrationTest {
         assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM chat_messages WHERE session_id=?", Integer.class, sessionId));
     }
 
+    // 验证过长的流式内容在写入数据库前被拒绝。
     @Test
     void oversizedStreamIsRejectedBeforePersistence() {
         ChatModel model = mock(ChatModel.class);
@@ -69,6 +73,7 @@ class ChatConversationStreamFailureIntegrationTest {
         assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM chat_messages WHERE session_id=?", Integer.class, sessionId));
     }
 
+    // 验证模型输出片段后失败不会保存本轮消息。
     @Test
     void modelFailureAfterChunkDoesNotSaveEitherMessage() {
         ChatModel model = mock(ChatModel.class);

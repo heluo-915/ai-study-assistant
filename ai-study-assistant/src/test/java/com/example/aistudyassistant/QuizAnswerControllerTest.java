@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class QuizAnswerControllerTest {
+    // 验证身份、输入、归属和作答处理。
     @Test
     void checksAuthInputOwnershipAndAnswers() throws Exception {
         QuizAnswerService service = mock(QuizAnswerService.class);

@@ -27,6 +27,7 @@ class NoteVectorSyncWorkerIntegrationTest {
     @Autowired private TransactionTemplate tx;
     @MockitoBean private ChunkBuildJobService backgroundJobs;
 
+    // 验证重建和删除本人笔记索引时不影响其他用户。
     @Test void reindexesAndDeletesOwnedNoteWithoutTouchingOtherUsers() {
         assertTrue(System.getenv("SPRING_DATASOURCE_URL").matches(
                 "jdbc:mysql://127\\.0\\.0\\.1:3307/codex_sync_[0-9a-f]{16}"));
@@ -63,6 +64,7 @@ class NoteVectorSyncWorkerIntegrationTest {
         assertTrue(vectors.searchChunks(101L,"Java 接口").isEmpty());
         assertEquals(1,vectors.searchChunks(202L,"用户笔记").size());
     }
+    // 验证失败任务仍可重试并能完成。
     @Test void failureRemainsRetryableAndRetryCompletes() {
         assertTrue(System.getenv("SPRING_DATASOURCE_URL").matches(
                 "jdbc:mysql://127\\.0\\.0\\.1:3307/codex_sync_[0-9a-f]{16}"));

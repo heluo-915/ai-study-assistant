@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class NoteQuizListControllerTest {
+    // 验证登录、归属、空结果以及答案隐藏。
     @Test
     void checksLoginOwnershipEmptyAndHidesAnswers() throws Exception {
         NoteQuizListService service = mock(NoteQuizListService.class);

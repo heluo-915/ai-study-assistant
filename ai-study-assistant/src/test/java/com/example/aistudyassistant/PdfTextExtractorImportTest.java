@@ -50,6 +50,7 @@ class PdfTextExtractorImportTest {
         String text = "中".repeat(3413) + "a";
         assertEquals(10 * 1024, text.getBytes(StandardCharsets.UTF_8).length);
         PdfTextExtractor stub = new PdfTextExtractor() {
+            // 返回测试使用的 PDF 提取文本。
             @Override public String extractText(byte[] ignored) { return text; }
         };
         assertEquals(text, stub.extractForImport(new byte[]{1}));
@@ -60,6 +61,7 @@ class PdfTextExtractorImportTest {
         String text = "中".repeat(3413) + "ab";
         assertEquals(10 * 1024 + 1, text.getBytes(StandardCharsets.UTF_8).length);
         PdfTextExtractor stub = new PdfTextExtractor() {
+            // 返回测试使用的 PDF 提取文本。
             @Override public String extractText(byte[] ignored) { return text; }
         };
         assertThrows(IllegalArgumentException.class, () -> stub.extractForImport(new byte[]{1}));

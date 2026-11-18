@@ -26,6 +26,7 @@ class QuizAttemptHistoryPersistenceTest {
     @Autowired QuizAttemptMapper attemptMapper;
     @Autowired JdbcTemplate jdbc;
 
+    // 验证保存生成的编号，并拒绝已修改或不属于用户的笔记。
     @Test
     void savesGeneratedIdAndRejectsChangedOrForeignNote() {
         String username = "quiz_test_" + UUID.randomUUID().toString().substring(0, 8);

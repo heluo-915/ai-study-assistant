@@ -21,19 +21,23 @@ class NoteVectorSyncWorkerTest {
     private final NoteChunkVectorService vectors = mock(NoteChunkVectorService.class);
     private final NoteVectorSyncWorker worker = new NoteVectorSyncWorker(tasks, previews, vectors);
 
+    // 构造测试使用的同步任务。
     private NoteVectorSyncTask task(String action) {
         return new NoteVectorSyncTask(12L, 7L, 1L, action, 1L, action, "RUNNING", null, 1, null, null, null);
     }
+    // 设置或执行测试中的任务领取。
     private void claim(String action) {
         when(tasks.claim(eq(7L), eq(12L), anyString())).thenReturn(1);
         when(tasks.find(7L, 12L)).thenReturn(task(action));
         when(tasks.finish(eq(7L), eq(12L), anyString(), anyBoolean())).thenReturn(1);
     }
 
+    // 验证未领取任务时不会操作向量库。
     @Test void noClaimNeverTouchesVectors() {
         assertFalse(worker.processPending(7L, 12L));
         verifyNoInteractions(previews, vectors);
     }
+    // 验证替换索引前先读取所属笔记的片段快照。
     @Test void upsertReadsOwnedSnapshotBeforeReplacing() {
         claim("UPSERT");
         when(previews.findPreviews(7L, 12L)).thenReturn(Optional.of(List.of(
@@ -46,12 +50,14 @@ class NoteVectorSyncWorkerTest {
         order.verify(vectors).saveChunk(7L, 12L, 1, "第二段");
         verify(tasks).finish(eq(7L), eq(12L), anyString(), eq(true));
     }
+    // 验证删除向量任务不要求笔记仍然存在。
     @Test void deletionDoesNotRequireAnExistingNote() {
         claim("DELETE");
         assertTrue(worker.processPending(7L, 12L));
         verify(vectors).deleteByNote(7L, 12L);
         verifyNoInteractions(previews);
     }
+    // 验证笔记不存在或不属于用户时不会先删除向量。
     @Test void foreignOrMissingNoteFailsBeforeDeleting() {
         claim("UPSERT");
         when(previews.findPreviews(7L, 12L)).thenReturn(Optional.empty());
@@ -59,6 +65,7 @@ class NoteVectorSyncWorkerTest {
         verifyNoInteractions(vectors);
         verify(tasks).finish(eq(7L), eq(12L), anyString(), eq(false));
     }
+    // 验证向量写入失败会被记录并向调用方抛出。
     @Test void writeFailureIsPropagatedAndRecorded() {
         claim("UPSERT");
         when(previews.findPreviews(7L, 12L)).thenReturn(Optional.of(List.of(new ChunkPreview(0, "片段"))));
@@ -66,6 +73,7 @@ class NoteVectorSyncWorkerTest {
         assertThrows(IllegalStateException.class, () -> worker.processPending(7L, 12L));
         verify(tasks).finish(eq(7L), eq(12L), anyString(), eq(false));
     }
+    // 验证任务最终状态更新失败时不会报告成功。
     @Test void failureToUpdateFinalStateIsNotReportedAsSuccess() {
         claim("DELETE");
         when(tasks.finish(eq(7L), eq(12L), anyString(), eq(true))).thenReturn(0);

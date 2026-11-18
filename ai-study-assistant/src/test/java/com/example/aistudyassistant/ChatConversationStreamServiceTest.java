@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class ChatConversationStreamServiceTest {
+    // 验证只有正常完成的会话才会保存。
     @Test
     void savesOnlyCompletedConversation() {
         ChatMessageService messages = mock(ChatMessageService.class);

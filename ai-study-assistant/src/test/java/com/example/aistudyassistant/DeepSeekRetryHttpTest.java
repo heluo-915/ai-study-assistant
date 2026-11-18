@@ -37,6 +37,7 @@ class DeepSeekRetryHttpTest {
     @LocalServerPort private int port;
     @Autowired private JwtService jwtService;
 
+    // 启动用于模拟上游服务的测试桩。
     private static HttpServer createStub() {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
@@ -61,6 +62,7 @@ class DeepSeekRetryHttpTest {
         }
     }
 
+    // 配置当前测试所需的环境或依赖。
     @DynamicPropertySource
     static void configure(DynamicPropertyRegistry registry) {
         registry.add("spring.ai.deepseek.base-url", () -> "http://127.0.0.1:" + STUB.getAddress().getPort());
@@ -74,9 +76,12 @@ class DeepSeekRetryHttpTest {
         registry.add("spring.ai.retry.backoff.multiplier", () -> 1);
     }
 
+    // 重置测试状态。
     @BeforeEach void reset() { REQUESTS.set(0); modelStatus = 400; firstAttempt = 0; secondAttempt = 0; }
+    // 关闭测试桩并释放资源。
     @AfterAll static void stopStub() { STUB.stop(0); }
 
+    // 向测试接口发送提问请求。
     private HttpResponse<String> ask() throws Exception {
         HttpRequest request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/chat"))
                 .timeout(Duration.ofSeconds(20))
@@ -86,6 +91,7 @@ class DeepSeekRetryHttpTest {
         return CLIENT.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
     }
 
+    // 验证网关错误响应。
     private void assertGatewayError(HttpResponse<String> response) {
         assertEquals(502, response.statusCode());
         var json = new JsonMapper().readTree(response.body());

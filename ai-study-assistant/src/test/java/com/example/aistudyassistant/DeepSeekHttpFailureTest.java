@@ -52,6 +52,7 @@ class DeepSeekHttpFailureTest {
     private Long userId;
     private Long sessionId;
 
+    // 启动用于模拟上游服务的测试桩。
     private static HttpServer createStub() {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
@@ -63,6 +64,7 @@ class DeepSeekHttpFailureTest {
         }
     }
 
+    // 在测试中模拟上游请求失败。
     private static void failRequest(HttpExchange exchange) throws IOException {
         try {
             exchange.getRequestBody().readAllBytes();
@@ -87,6 +89,7 @@ class DeepSeekHttpFailureTest {
         }
     }
 
+    // 为测试配置模拟上游服务。
     @DynamicPropertySource
     static void configureStub(DynamicPropertyRegistry registry) {
         registry.add("spring.ai.deepseek.base-url", () -> "http://127.0.0.1:" + STUB.getAddress().getPort());
@@ -96,6 +99,7 @@ class DeepSeekHttpFailureTest {
         registry.add("spring.ai.retry.max-attempts", () -> 1);
     }
 
+    // 创建本次测试使用的数据。
     @BeforeEach
     void createTestData() {
         MODEL_REQUESTS.set(0); closeConnection = false; returnSuccess = false;
@@ -112,6 +116,7 @@ class DeepSeekHttpFailureTest {
         when(embeddingService.cosineSimilarity(any(float[].class), any(float[].class))).thenReturn(1.0);
     }
 
+    // 清理本次测试创建的数据。
     @AfterEach
     void cleanup() {
         if (username != null) {
@@ -122,8 +127,10 @@ class DeepSeekHttpFailureTest {
         }
     }
 
+    // 关闭测试桩并释放资源。
     @AfterAll static void stopStub() { STUB.stop(0); }
 
+    // 向测试服务发送 POST 请求。
     private HttpResponse<String> post(String path) throws Exception {
         HttpRequest request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + path))
                 .timeout(Duration.ofSeconds(60))
@@ -134,6 +141,7 @@ class DeepSeekHttpFailureTest {
         return CLIENT.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
     }
 
+    // 验证模型调用失败时的响应。
     private void assertModelFailure(HttpResponse<String> response) {
         assertEquals(502, response.statusCode());
         var json = new JsonMapper().readTree(response.body());
@@ -143,19 +151,23 @@ class DeepSeekHttpFailureTest {
         assertTrue(MODEL_REQUESTS.get() > 0, "请求必须到达本地模拟模型服务");
     }
 
+    // 验证单轮对话会报告模型调用失败。
     @Test void singleChatShouldReportModelFailure() throws Exception {
         assertModelFailure(post("/chat"));
     }
 
+    // 验证模型失败后不会保存会话消息。
     @Test void conversationShouldNotSaveMessagesAfterModelFailure() throws Exception {
         assertModelFailure(post("/chat/sessions/" + sessionId + "/messages"));
         assertEquals(0, jdbcTemplate.queryForObject("SELECT COUNT(*) FROM chat_messages WHERE session_id = ?", Integer.class, sessionId));
     }
 
+    // 验证片段问答会报告模型调用失败。
     @Test void chunkAskShouldReportModelFailure() throws Exception {
         assertModelFailure(post("/notes/chunks/ask"));
     }
 
+    // 验证模型连接关闭时会报告调用失败。
     @Test void closedModelConnectionShouldReportModelFailure() throws Exception {
         closeConnection = true;
         assertModelFailure(post("/chat"));

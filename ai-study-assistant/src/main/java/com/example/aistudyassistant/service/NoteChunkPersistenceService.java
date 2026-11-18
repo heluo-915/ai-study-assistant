@@ -17,6 +17,7 @@ public class NoteChunkPersistenceService {
     private final NoteMapper noteMapper;
     private final NoteVectorSyncTaskService vectorSyncTasks;
 
+    // 初始化 NoteChunkPersistenceService 实例。
     public NoteChunkPersistenceService(NoteChunkMapper noteChunkMapper, NoteMapper noteMapper, NoteVectorSyncTaskService vectorSyncTasks) {
         this.noteChunkMapper = noteChunkMapper;
         this.noteMapper = noteMapper;

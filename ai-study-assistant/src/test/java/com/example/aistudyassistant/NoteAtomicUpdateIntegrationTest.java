@@ -23,12 +23,14 @@ class NoteAtomicUpdateIntegrationTest {
     @MockitoSpyBean private NoteVectorSyncTaskService sync;
     @MockitoSpyBean private NoteChunkService chunks;
 
+    // 准备测试所需的初始数据。
     private void seed(long user,long note,String name) {
         assertTrue(System.getenv("SPRING_DATASOURCE_URL").matches("jdbc:mysql://127\\.0\\.0\\.1:3307/codex_sync_[0-9a-f]{16}"));
         jdbc.update("INSERT INTO users(id,username,password_hash) VALUES (?,?,'x')",user,name);
         jdbc.update("INSERT INTO notes(id,title,content,user_id) VALUES (?,'旧标题','旧正文',?)",note,user);
         jdbc.update("INSERT INTO note_chunks(note_id,chunk_index,content,embedding,model_name) VALUES (?,0,'旧片段','[1]','test')",note);
     }
+    // 验证模型失败时保留原笔记和原片段。
     @Test void modelFailureKeepsOriginalNoteAndChunks() {
         seed(901,91001,"atomic_failure");
         when(embeddings.embed("新正文")).thenThrow(new IllegalStateException("模拟模型故障"));
@@ -36,6 +38,7 @@ class NoteAtomicUpdateIntegrationTest {
         assertEquals("旧正文",jdbc.queryForObject("SELECT content FROM notes WHERE id=91001",String.class));
         assertEquals("旧片段",jdbc.queryForObject("SELECT content FROM note_chunks WHERE note_id=91001",String.class));
     }
+    // 验证成功更新时同时替换片段并登记索引任务。
     @Test void successfulUpdateAtomicallyReplacesChunksAndQueuesIndex() {
         seed(902,92002,"atomic_success");
         when(embeddings.embed("新正文")).thenReturn(new float[]{1,0});
@@ -44,6 +47,7 @@ class NoteAtomicUpdateIntegrationTest {
         assertEquals("新正文",jdbc.queryForObject("SELECT content FROM note_chunks WHERE note_id=92002",String.class));
         assertEquals("UPSERT",sync.find(902L,92002L).orElseThrow().requestedAction());
     }
+    // 验证同步任务登记失败会回滚笔记及片段修改。
     @Test void enqueueFailureRollsBackNoteAndChunks() {
         seed(903,93003,"atomic_rollback");
         when(embeddings.embed("新正文")).thenReturn(new float[]{1,0});
@@ -53,6 +57,7 @@ class NoteAtomicUpdateIntegrationTest {
         assertEquals("旧正文",jdbc.queryForObject("SELECT content FROM notes WHERE id=93003",String.class));
         assertEquals("旧片段",jdbc.queryForObject("SELECT content FROM note_chunks WHERE note_id=93003",String.class));
     }
+    // 验证并发修改不会被旧快照覆盖。
     @Test void concurrentChangeIsNotOverwritten() {
         seed(904,94004,"atomic_conflict");
         when(embeddings.embed("新正文")).thenReturn(new float[]{1,0});

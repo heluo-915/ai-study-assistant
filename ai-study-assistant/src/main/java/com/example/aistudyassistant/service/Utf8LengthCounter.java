@@ -5,6 +5,7 @@ public class Utf8LengthCounter {
     private long bytes;
     private boolean previousHighSurrogate;
 
+    // 累加文本的 UTF-8 字节长度，并处理跨片段的代理字符。
     public long append(String text) {
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);

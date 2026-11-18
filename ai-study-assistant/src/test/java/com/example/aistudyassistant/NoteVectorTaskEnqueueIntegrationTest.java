@@ -26,6 +26,7 @@ class NoteVectorTaskEnqueueIntegrationTest {
     @MockitoBean private NoteChunkService preparedChunks;
     @MockitoBean private ChunkBuildJobService jobs;
 
+    // 验证片段变更和笔记删除时同步登记任务。
     @Test void chunkChangesAndDeletionCommitWithTasks() {
         assertTrue(System.getenv("SPRING_DATASOURCE_URL").matches(
                 "jdbc:mysql://127\\.0\\.0\\.1:3307/codex_sync_[0-9a-f]{16}"));
@@ -45,6 +46,7 @@ class NoteVectorTaskEnqueueIntegrationTest {
         assertEquals(0,jdbc.queryForObject("SELECT COUNT(*) FROM notes WHERE id=71001",Integer.class));
     }
 
+    // 验证任务登记失败会回滚笔记更新。
     @Test void failingToRecordTaskRollsBackNoteUpdate() {
         assertTrue(System.getenv("SPRING_DATASOURCE_URL").matches(
                 "jdbc:mysql://127\\.0\\.0\\.1:3307/codex_sync_[0-9a-f]{16}"));
@@ -57,6 +59,7 @@ class NoteVectorTaskEnqueueIntegrationTest {
         assertThrows(IllegalStateException.class,() -> notes.updateNoteByIdAndUserId("测试","修改",73003L,703L));
         assertEquals("原文",jdbc.queryForObject("SELECT content FROM notes WHERE id=73003",String.class));
     }
+    // 验证回填按用户限定范围且不重置已有任务。
     @Test void backfillIsScopedAndDoesNotResetExistingTasks() {
         assertTrue(System.getenv("SPRING_DATASOURCE_URL").matches(
                 "jdbc:mysql://127\\.0\\.0\\.1:3307/codex_sync_[0-9a-f]{16}"));
@@ -72,6 +75,7 @@ class NoteVectorTaskEnqueueIntegrationTest {
         sync.scheduleMissing(704L);
         assertEquals(1,sync.find(704L,74001L).orElseThrow().requestedVersion());
     }
+    // 验证重试具有间隔和次数限制，并可手动重置。
     @Test void retriesAreDelayedBoundedAndCanBeResetManually() {
         assertTrue(System.getenv("SPRING_DATASOURCE_URL").matches(
                 "jdbc:mysql://127\\.0\\.0\\.1:3307/codex_sync_[0-9a-f]{16}"));

@@ -47,7 +47,7 @@ MySQL 保存用户、笔记、片段及学习记录，是内容与归属的依�
 - [前端启动与功能说明](ai-study-assistant-front/README.md)
 - [项目文档索引](ai-study-assistant/docs/README.md)
 - [源码逐步阅读路线](ai-study-assistant/docs/项目源码逐步阅读路线.md)
-- [完整自学手册](ai-study-assistant/AI学习助手-完整自学手册.md)
+- [完整自学手册](ai-study-assistant/docs/AI学习助手-完整自学手册.md)
 - [Qdrant 接入与验证](ai-study-assistant/docs/Qdrant接入与验证.md)
 
 ## 本地运行

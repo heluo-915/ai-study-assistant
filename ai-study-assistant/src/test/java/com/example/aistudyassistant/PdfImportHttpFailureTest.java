@@ -44,6 +44,7 @@ class PdfImportHttpFailureTest {
     private String username;
     private Long userId;
 
+    // 启动测试使用的代理服务。
     private static HttpServer startProxy() {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
@@ -55,6 +56,7 @@ class PdfImportHttpFailureTest {
         }
     }
 
+    // 处理测试代理收到的请求。
     private static void proxy(HttpExchange exchange) throws IOException {
         try {
             byte[] requestBody = exchange.getRequestBody().readAllBytes();
@@ -86,11 +88,13 @@ class PdfImportHttpFailureTest {
         }
     }
 
+    // 为测试配置模拟的 Ollama 服务地址。
     @DynamicPropertySource
     static void configureOllama(DynamicPropertyRegistry registry) {
         registry.add("spring.ai.ollama.base-url", () -> "http://127.0.0.1:" + OLLAMA_PROXY.getAddress().getPort());
     }
 
+    // 创建供测试使用的用户。
     @BeforeEach
     void createUser() {
         EMBEDDING_REQUESTS.set(0);
@@ -101,6 +105,7 @@ class PdfImportHttpFailureTest {
         userId = jdbcTemplate.queryForObject("SELECT id FROM users WHERE username = ?", Long.class, username);
     }
 
+    // 清理本次测试创建的数据。
     @AfterEach
     void cleanup() {
         if (username != null) {
@@ -109,11 +114,13 @@ class PdfImportHttpFailureTest {
         }
     }
 
+    // 关闭测试代理服务。
     @AfterAll
     static void stopProxy() {
         OLLAMA_PROXY.stop(0);
     }
 
+    // 构造或发送测试使用的 PDF 数据。
     private byte[] pdf() throws Exception {
         try (var document = new org.apache.pdfbox.pdmodel.PDDocument(); var output = new java.io.ByteArrayOutputStream()) {
             var page = new org.apache.pdfbox.pdmodel.PDPage();
@@ -130,6 +137,7 @@ class PdfImportHttpFailureTest {
         }
     }
 
+    // 发送测试 PDF 导入请求。
     private HttpResponse<String> importPdf() throws Exception {
         String boundary = "TestBoundary" + UUID.randomUUID().toString().replace("-", "");
         var body = new java.io.ByteArrayOutputStream();

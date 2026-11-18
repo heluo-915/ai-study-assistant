@@ -26,7 +26,7 @@ public class NoteChunkVectorService {
 
     private final VectorStore vectorStore;
 
-    public NoteChunkVectorService(VectorStore vectorStore) {
+    /* 保存向量存储客户端，供片段索引操作使用。 */ public NoteChunkVectorService(VectorStore vectorStore) {
         this.vectorStore = vectorStore;
     }
 

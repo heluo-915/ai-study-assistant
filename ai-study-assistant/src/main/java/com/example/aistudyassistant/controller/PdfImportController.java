@@ -21,6 +21,7 @@ public class PdfImportController {
     private final PdfTextExtractor pdfTextExtractor;
     private final NoteCreationService noteCreationService;
 
+    // 初始化 PdfImportController 实例。
     public PdfImportController(
             PdfTextExtractor pdfTextExtractor,
             NoteCreationService noteCreationService

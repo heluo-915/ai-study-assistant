@@ -12,6 +12,7 @@ public class QuizAttemptHistoryService {
     private final QuizQuestionMapper questionMapper;
     private final QuizAttemptMapper attemptMapper;
 
+    // 初始化 QuizAttemptHistoryService 实例。
     public QuizAttemptHistoryService(QuizQuestionMapper questionMapper, QuizAttemptMapper attemptMapper) {
         this.questionMapper = questionMapper;
         this.attemptMapper = attemptMapper;

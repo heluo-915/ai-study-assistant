@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class WrongQuizControllerTest {
+    // 验证要求令牌并使用已认证用户身份。
     @Test
     void requiresTokenAndUsesAuthenticatedUser() throws Exception {
         WrongQuizService service = mock(WrongQuizService.class);

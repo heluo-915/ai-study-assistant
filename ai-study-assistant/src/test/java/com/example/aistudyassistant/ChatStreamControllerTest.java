@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.Matchers.containsString;
 
 class ChatStreamControllerTest {
+    // 验证登录、输入检查和流式事件输出。
     @Test
     void checksLoginInputAndStreamsEvents() throws Exception {
         ChatStreamService service = mock(ChatStreamService.class);

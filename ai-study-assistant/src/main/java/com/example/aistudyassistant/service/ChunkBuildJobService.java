@@ -15,16 +15,20 @@ public class ChunkBuildJobService {
     private final ChunkBuildJobMapper mapper;
     private final NoteChunkBuildService build;
     private final NoteVectorBuildService vectors;
+    // 初始化 ChunkBuildJobService 实例。
     public ChunkBuildJobService(ChunkBuildJobMapper mapper, NoteChunkBuildService build, NoteVectorBuildService vectors) {
         this.mapper=mapper; this.build=build; this.vectors=vectors;
     }
+    // 创建片段构建任务并返回生成的任务 ID。
     public Long create(Long userId, Long noteId) {
         Map<String,Object> params=new HashMap<>();
         params.put("userId",userId); params.put("noteId",noteId);
         if (mapper.create(params)==0) return null;
         return ((Number) params.get("id")).longValue();
     }
+    // 查询当前用户的片段构建任务。
     public ChunkBuildJob find(Long userId, Long id) { return mapper.find(userId,id); }
+    // 将当前用户可重试的构建任务重新排队。
     public boolean retry(Long userId, Long id) { return mapper.retry(userId,id)>0; }
     // 数据库存储任务；领取操作带状态条件，避免两个线程领取同一任务。
     @Scheduled(fixedDelayString="${app.chunk-jobs.poll-ms:5000}")

@@ -32,7 +32,7 @@ public class NoteChunkSearchService {
     private final EmbeddingService embeddingService;
     private final NoteChunkVectorService qdrant;
 
-    public NoteChunkSearchService(
+    /* 保存片段查询、向量解析和索引检索所需的依赖。 */ public NoteChunkSearchService(
             NoteChunkMapper noteChunkMapper,
             NoteEmbeddingService noteEmbeddingService,
             EmbeddingService embeddingService,
@@ -85,7 +85,7 @@ public class NoteChunkSearchService {
         return results;
     }
 
-    private List<ChunkSearchResult> searchMySql(Long userId, String question) {
+    /* 读取用户片段并计算问题向量与片段向量的余弦相似度。 */ private List<ChunkSearchResult> searchMySql(Long userId, String question) {
         List<NoteChunk> chunks = noteChunkMapper.findByUserId(userId);
 
         if (chunks.isEmpty()) {

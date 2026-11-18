@@ -41,11 +41,13 @@ class PdfImportHttpTest {
     private Long userId;
     private Long otherUserId;
 
+    // 配置当前测试所需的环境或依赖。
     @DynamicPropertySource
     static void configure(DynamicPropertyRegistry registry) {
         registry.add("spring.ai.deepseek.api-key", () -> "test-key-not-real");
     }
 
+    // 创建供测试使用的用户。
     @BeforeEach void createUsers() {
         String prefix = "pdf_test_" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
         username = prefix + "a";
@@ -56,6 +58,7 @@ class PdfImportHttpTest {
         otherUserId = jdbcTemplate.queryForObject("SELECT id FROM users WHERE username = ?", Long.class, otherUsername);
     }
 
+    // 清理本次测试创建的数据。
     @AfterEach void cleanup() {
         if (username != null) {
             jdbcTemplate.update("DELETE FROM notes WHERE user_id IN (SELECT id FROM users WHERE username IN (?, ?))", username, otherUsername);
@@ -86,6 +89,7 @@ class PdfImportHttpTest {
         }
     }
 
+    // 发送测试 PDF 导入请求。
     private HttpResponse<String> importPdf(String title, String filename, byte[] pdf, Long tokenUserId) throws Exception {
         String boundary = "TestBoundary" + UUID.randomUUID().toString().replace("-", "");
         ByteArrayOutputStream body = new ByteArrayOutputStream();
@@ -102,17 +106,20 @@ class PdfImportHttpTest {
                 HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
     }
 
+    // 获取Note 字段。
     private HttpResponse<String> getNote(long id, Long tokenUserId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/notes/" + id))
                 .timeout(Duration.ofSeconds(10)).header("Authorization", "Bearer " + jwtService.generateToken(tokenUserId)).GET().build();
         return CLIENT.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
     }
 
+    // 验证接口要求登录。
     @Test void requiresLogin() throws Exception {
         assertEquals(401, importPdf("标题", "test.pdf", pdf(1, 1), null).statusCode());
         assertEquals(0, jdbcTemplate.queryForObject("SELECT COUNT(*) FROM notes WHERE user_id = ?", Integer.class, userId));
     }
 
+    // 验证导入文本后按用户归属创建向量。
     @Test void importsTextAndCreatesVectorsWithOwnership() throws Exception {
         HttpResponse<String> response = importPdf("PDF 学习笔记", "notes.PDF", pdf(2, 1), userId);
         assertEquals(201, response.statusCode());
@@ -126,6 +133,7 @@ class PdfImportHttpTest {
         assertEquals(404, getNote(noteId, otherUserId).statusCode());
     }
 
+    // 验证无效输入被拒绝且不创建笔记。
     @Test void rejectsInvalidInputWithoutCreatingNotes() throws Exception {
         byte[] valid = pdf(1, 1);
         assertEquals(400, importPdf(null, "test.pdf", valid, userId).statusCode());

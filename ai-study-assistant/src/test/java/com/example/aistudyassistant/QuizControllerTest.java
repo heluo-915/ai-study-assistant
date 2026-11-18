@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class QuizControllerTest {
+    // 验证身份、归属和结果返回。
     @Test
     void checksAuthenticationOwnershipAndResult() throws Exception {
         NoteService notes = mock(NoteService.class);

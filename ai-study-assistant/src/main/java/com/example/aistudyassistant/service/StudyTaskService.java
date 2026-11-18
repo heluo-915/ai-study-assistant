@@ -10,6 +10,7 @@ import java.util.List;
 public class StudyTaskService {
     private final StudyTaskMapper mapper;
     private final WrongQuizService wrongQuizService;
+    // 初始化 StudyTaskService 实例。
     public StudyTaskService(StudyTaskMapper mapper, WrongQuizService wrongQuizService) {
         this.mapper=mapper; this.wrongQuizService=wrongQuizService;
     }
@@ -20,7 +21,9 @@ public class StudyTaskService {
                 .forEach(quiz -> mapper.add(userId, quiz.quizId(), date));
         return mapper.findByDate(userId, date);
     }
+    // 查询当前用户指定日期的学习任务。
     public List<StudyTask> find(Long userId, LocalDate date) { return mapper.findByDate(userId, date); }
+    // 设置Completed 字段。
     public boolean setCompleted(Long userId, Long taskId, boolean completed) {
         return mapper.setCompleted(userId, taskId, completed) > 0;
     }

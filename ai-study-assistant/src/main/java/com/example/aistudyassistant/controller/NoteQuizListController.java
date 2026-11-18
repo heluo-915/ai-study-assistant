@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 public class NoteQuizListController {
     private final NoteQuizListService service;
+    // 初始化 NoteQuizListController 实例。
     public NoteQuizListController(NoteQuizListService service) { this.service = service; }
 
     // 查询当前用户的笔记生成的题目，不展示答案。

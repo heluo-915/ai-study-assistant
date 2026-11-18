@@ -19,6 +19,7 @@ public class PdfPreviewController {
 
     private final PdfTextExtractor pdfTextExtractor;
 
+    // 初始化 PdfPreviewController 实例。
     public PdfPreviewController(PdfTextExtractor pdfTextExtractor) {
         this.pdfTextExtractor = pdfTextExtractor;
     }

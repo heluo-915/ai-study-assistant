@@ -10,7 +10,9 @@ import java.util.Locale;
 @RestController
 public class AsyncNoteImportController {
     private final AsyncNoteImportService service;
+    // 初始化 AsyncNoteImportController 实例。
     public AsyncNoteImportController(AsyncNoteImportService service) { this.service=service; }
+    // 接收文本文件，创建笔记并提交异步片段构建任务。
     @PostMapping("/notes/upload-async")
     public ResponseEntity<?> upload(@RequestAttribute("userId") Long userId,
             @RequestParam("title") String title,@RequestParam("file") MultipartFile file) throws IOException {

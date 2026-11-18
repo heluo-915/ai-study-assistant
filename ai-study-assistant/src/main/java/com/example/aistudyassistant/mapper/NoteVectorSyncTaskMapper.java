@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface NoteVectorSyncTaskMapper {
+    // 查询下一条待处理或到达重试时间的同步任务。
     @Select("""
         SELECT user_id AS userId,note_id AS noteId FROM note_vector_sync_tasks
         WHERE status='PENDING' OR (status='FAILED' AND attempts<3 AND next_retry_at<=CURRENT_TIMESTAMP)
@@ -38,6 +39,7 @@ public interface NoteVectorSyncTaskMapper {
         """)
     int schedule(@Param("userId") Long userId, @Param("noteId") Long noteId, @Param("action") String action);
 
+    // 按用户和笔记 ID 查询同步任务。
     @Select("""
         SELECT note_id AS noteId,user_id AS userId,requested_version AS requestedVersion,
                requested_action AS requestedAction,claimed_version AS claimedVersion,
@@ -74,6 +76,7 @@ public interface NoteVectorSyncTaskMapper {
     int finish(@Param("userId") Long userId,@Param("noteId") Long noteId,
                @Param("token") String token,@Param("success") boolean success);
 
+    // 重置当前用户失败的同步任务并重新排队。
     @Update("""
         UPDATE note_vector_sync_tasks SET status='PENDING',error_message=NULL,attempts=0,next_retry_at=NULL
         WHERE note_id=#{noteId} AND user_id=#{userId} AND status='FAILED'

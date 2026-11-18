@@ -15,6 +15,7 @@ public class NoteQuizListService {
     private final QuizQuestionMapper quizQuestionMapper;
     private final JsonMapper jsonMapper = new JsonMapper();
 
+    // 初始化 NoteQuizListService 实例。
     public NoteQuizListService(NoteService noteService, QuizQuestionMapper quizQuestionMapper) {
         this.noteService = noteService;
         this.quizQuestionMapper = quizQuestionMapper;

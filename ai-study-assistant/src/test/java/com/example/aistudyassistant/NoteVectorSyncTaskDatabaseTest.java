@@ -25,6 +25,7 @@ class NoteVectorSyncTaskDatabaseTest {
     @Autowired private TransactionTemplate transaction;
     @MockitoBean private ChunkBuildJobService backgroundJobs;
 
+    // 验证同步任务的归属、版本、失败重试和删除记录。
     @Test void recordsOwnershipVersionsFailureRetryAndDeletionTombstone() {
         assertTrue(System.getenv("SPRING_DATASOURCE_URL").matches(
                 "jdbc:mysql://127\\.0\\.0\\.1:3307/codex_sync_[0-9a-f]{16}"));
@@ -63,6 +64,7 @@ class NoteVectorSyncTaskDatabaseTest {
         }));
         assertTrue(service.find(101L,10002L).isEmpty());
     }
+    // 验证并发领取和手动恢复使用预期令牌。
     @Test void concurrentClaimAndManualRecoveryUseTheExpectedToken() throws Exception {
         assertTrue(System.getenv("SPRING_DATASOURCE_URL").matches(
                 "jdbc:mysql://127\\.0\\.0\\.1:3307/codex_sync_[0-9a-f]{16}"));

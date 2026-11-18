@@ -11,6 +11,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class ChatStreamService {
     private final ChatModel chatModel;
+    // 初始化 ChatStreamService 实例。
     public ChatStreamService(ChatModel chatModel) { this.chatModel = chatModel; }
 
     // 模型文本逐段发送；正常完成与失败使用不同事件，避免客户端误判。

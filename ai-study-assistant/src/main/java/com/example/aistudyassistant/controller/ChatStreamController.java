@@ -13,6 +13,7 @@ import reactor.core.publisher.Flux;
 @RestController
 public class ChatStreamController {
     private final ChatStreamService service;
+    // 初始化 ChatStreamController 实例。
     public ChatStreamController(ChatStreamService service) { this.service = service; }
 
     // 提交一条问题，返回 SSE 文本片段；不读写会话历史。

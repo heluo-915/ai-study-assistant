@@ -15,10 +15,10 @@ public class NoteVectorSyncScheduler {
     private static final Logger log = LoggerFactory.getLogger(NoteVectorSyncScheduler.class);
     private final NoteVectorSyncTaskMapper tasks;
     private final NoteVectorSyncWorker worker;
-    public NoteVectorSyncScheduler(NoteVectorSyncTaskMapper tasks, NoteVectorSyncWorker worker) {
+    /* 保存任务查询和同步执行所需的依赖。 */ public NoteVectorSyncScheduler(NoteVectorSyncTaskMapper tasks, NoteVectorSyncWorker worker) {
         this.tasks=tasks; this.worker=worker;
     }
-    @Scheduled(fixedDelayString = "${app.qdrant-sync.poll-ms:5000}")
+    /* 定时查询可处理的向量同步任务，并记录执行失败。 */ @Scheduled(fixedDelayString = "${app.qdrant-sync.poll-ms:5000}")
     public void processNext() {
         NoteVectorSyncTaskKey task = tasks.nextPending();
         if (task == null) return;

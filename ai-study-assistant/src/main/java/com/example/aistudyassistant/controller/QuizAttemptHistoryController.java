@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 public class QuizAttemptHistoryController {
     private final QuizAttemptHistoryService service;
+    // 初始化 QuizAttemptHistoryController 实例。
     public QuizAttemptHistoryController(QuizAttemptHistoryService service) { this.service = service; }
 
     // 返回本人某道题最近 50 次作答。

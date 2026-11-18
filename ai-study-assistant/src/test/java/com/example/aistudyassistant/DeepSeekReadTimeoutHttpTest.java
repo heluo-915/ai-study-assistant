@@ -32,6 +32,7 @@ class DeepSeekReadTimeoutHttpTest {
     @LocalServerPort private int port;
     @Autowired private JwtService jwtService;
 
+    // 启动用于模拟上游服务的测试桩。
     private static HttpServer createStub() {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
@@ -61,6 +62,7 @@ class DeepSeekReadTimeoutHttpTest {
         }
     }
 
+    // 配置当前测试所需的环境或依赖。
     @DynamicPropertySource
     static void configure(DynamicPropertyRegistry registry) {
         registry.add("spring.ai.deepseek.base-url", () -> "http://127.0.0.1:" + STUB.getAddress().getPort());
@@ -74,8 +76,10 @@ class DeepSeekReadTimeoutHttpTest {
         registry.add("spring.ai.retry.max-attempts", () -> 0);
     }
 
+    // 关闭测试桩并释放资源。
     @AfterAll static void stopStub() { STUB.stop(0); }
 
+    // 验证模型响应超时时返回网关错误。
     @Test
     void slowDeepSeekResponseShouldReturnGatewayError() throws Exception {
         HttpRequest request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/chat"))

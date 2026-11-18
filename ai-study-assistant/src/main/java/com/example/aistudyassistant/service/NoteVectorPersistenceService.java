@@ -9,7 +9,9 @@ import java.util.Objects;
 public class NoteVectorPersistenceService {
     private final NoteMapper notes;
     private final NoteEmbeddingMapper embeddings;
+    // 初始化 NoteVectorPersistenceService 实例。
     public NoteVectorPersistenceService(NoteMapper notes, NoteEmbeddingMapper embeddings) { this.notes=notes; this.embeddings=embeddings; }
+    // 锁定笔记并核对原文未变化后保存向量。
     @Transactional
     public void saveIfUnchanged(Long userId, Long noteId, String content, String json, String model) {
         Note current=notes.findByIdAndUserIdForUpdate(userId,noteId);

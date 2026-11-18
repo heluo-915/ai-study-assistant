@@ -28,6 +28,7 @@ class QdrantIntegratedSearchTest {
     @MockitoSpyBean private NoteChunkVectorService vectors;
     @MockitoSpyBean private NoteChunkMapper chunkMapper;
 
+    // 验证真实索引的检索及存在待同步变更时的回退。
     @Test void validatesRealIndexAndFallsBackWhenNewChangesArePending() {
         assertTrue(System.getenv("SPRING_DATASOURCE_URL").matches(
                 "jdbc:mysql://127\\.0\\.0\\.1:3307/codex_sync_[0-9a-f]{16}"));

@@ -13,6 +13,7 @@ public class WrongQuizService {
     private final QuizQuestionMapper mapper;
     private final JsonMapper jsonMapper = new JsonMapper();
 
+    // 初始化 WrongQuizService 实例。
     public WrongQuizService(QuizQuestionMapper mapper) { this.mapper = mapper; }
 
     // 一道曾答错的题目只返回一次，重练前不显示答案与解析。

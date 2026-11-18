@@ -33,6 +33,7 @@ class QdrantSyncHttpIntegrationTest {
     @MockitoSpyBean private NoteChunkVectorService vectorStore;
     private final HttpClient client=HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).build();
 
+    // 向测试接口发送请求。
     private HttpResponse<String> call(String method,String path,String token,String body) throws Exception {
         var builder=HttpRequest.newBuilder(URI.create("http://127.0.0.1:"+port+path)).timeout(Duration.ofSeconds(90));
         if (token!=null) builder.header("Authorization","Bearer "+token);
@@ -40,7 +41,9 @@ class QdrantSyncHttpIntegrationTest {
         return client.send(builder.method(method,body==null ? HttpRequest.BodyPublishers.noBody() :
                 HttpRequest.BodyPublishers.ofString(body,StandardCharsets.UTF_8)).build(),HttpResponse.BodyHandlers.ofString());
     }
+    // 等待测试任务达到预期状态。
     private void awaitTask(long user,long note,String action) throws Exception { awaitTask(user,note,action,false); }
+    // 等待测试任务达到预期状态。
     private void awaitTask(long user,long note,String action,boolean allowFailed) throws Exception {
         for (int i=0;i<120;i++) {
             var state=tasks.find(user,note);
@@ -53,6 +56,7 @@ class QdrantSyncHttpIntegrationTest {
         fail("任务未在时间内完成");
     }
 
+    // 通过真实 HTTP 验证旧笔记回填、更新、删除和用户隔离。
     @Test void oldNotesBackfillUpdateDeleteAndIsolationThroughRealHttp() throws Exception {
         assertTrue(System.getenv("SPRING_DATASOURCE_URL").matches("jdbc:mysql://127\\.0\\.0\\.1:3307/codex_sync_[0-9a-f]{16}"));
         assertTrue(System.getProperty("spring.ai.vectorstore.qdrant.collection-name", "").matches("codex_test_[0-9a-f]{16}"));

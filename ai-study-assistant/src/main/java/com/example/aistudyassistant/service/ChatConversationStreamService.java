@@ -22,6 +22,7 @@ public class ChatConversationStreamService {
     private final ChatModel chatModel;
     private final ChatStreamPersistenceService persistenceService;
 
+    // 初始化 ChatConversationStreamService 实例。
     public ChatConversationStreamService(ChatMessageService messageService, ChatService chatService,
             ChatModel chatModel, ChatStreamPersistenceService persistenceService) {
         this.messageService = messageService;

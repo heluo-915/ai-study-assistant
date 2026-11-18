@@ -14,6 +14,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 class NoteServiceTest {
+    // 验证补建向量时单条失败不会阻止处理后续笔记。
     @Test
     void rebuildMissingEmbeddingsShouldContinueAfterFailure() {
         NoteMapper noteMapper = mock(NoteMapper.class);

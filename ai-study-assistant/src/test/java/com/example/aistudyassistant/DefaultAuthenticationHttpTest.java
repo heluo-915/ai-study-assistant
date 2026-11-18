@@ -20,11 +20,13 @@ class DefaultAuthenticationHttpTest {
     @Autowired private JwtService jwt;
     @MockitoBean private ChunkBuildJobService jobs;
     private final HttpClient client=HttpClient.newHttpClient();
+    // 构造或发送测试请求。
     private HttpResponse<String> request(String path,String token) throws Exception {
         var b=HttpRequest.newBuilder(URI.create("http://127.0.0.1:"+port+path)).GET();
         if (token!=null) b.header("Authorization","Bearer "+token);
         return client.send(b.build(),HttpResponse.BodyHandlers.ofString());
     }
+    // 验证公开路径仍可访问，未知路径默认受保护。
     @Test void publicPathsRemainPublicAndUnknownPathsAreProtected() throws Exception {
         assertEquals(200,request("/hello",null).statusCode());
         assertEquals(401,request("/notes",null).statusCode());

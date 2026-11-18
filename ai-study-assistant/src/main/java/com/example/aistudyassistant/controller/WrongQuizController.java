@@ -11,6 +11,7 @@ import java.util.List;
 @RestController
 public class WrongQuizController {
     private final WrongQuizService service;
+    // 初始化 WrongQuizController 实例。
     public WrongQuizController(WrongQuizService service) { this.service = service; }
 
     // 返回当前用户最近答错过的题目。

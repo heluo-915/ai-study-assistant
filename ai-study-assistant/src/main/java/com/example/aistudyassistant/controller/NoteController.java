@@ -179,6 +179,7 @@ public class NoteController {
 
         return ResponseEntity.ok(response);
     }
+    // 校验问题并返回当前用户的整篇笔记语义搜索结果。
     @GetMapping("/notes/semantic-search")
     public ResponseEntity<List<NoteSearchResult>> semanticSearch(
             @RequestAttribute("userId") Long userId,

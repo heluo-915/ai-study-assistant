@@ -47,6 +47,7 @@ public interface NoteEmbeddingMapper {
             @Param("embedding") String embedding,
             @Param("modelName") String modelName
     );
+    // 查询当前用户笔记及其整篇向量。
     @Select("""
         SELECT n.id AS noteId, n.title, n.content,
                e.embedding, e.model_name AS modelName

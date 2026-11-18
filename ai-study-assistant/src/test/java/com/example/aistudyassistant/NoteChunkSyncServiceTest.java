@@ -15,6 +15,7 @@ class NoteChunkSyncServiceTest {
     private final NoteChunkVectorService vectors = mock(NoteChunkVectorService.class);
     private final NoteChunkSyncService service = new NoteChunkSyncService(previews, vectors);
 
+    // 验证写入本人全部片段并返回数量。
     @Test void writesEveryOwnedChunkAndReturnsCount() {
         when(previews.findPreviews(7L, 12L)).thenReturn(Optional.of(List.of(
                 new ChunkPreview(0, "第一段"), new ChunkPreview(1, "第二段"))));
@@ -25,18 +26,21 @@ class NoteChunkSyncServiceTest {
         verifyNoMoreInteractions(vectors);
     }
 
+    // 验证笔记不存在或不属于用户时不会写入向量。
     @Test void missingOrForeignNoteNeverWritesVectors() {
         when(previews.findPreviews(7L, 12L)).thenReturn(Optional.empty());
         assertTrue(service.copyExistingChunks(7L, 12L).isEmpty());
         verifyNoInteractions(vectors);
     }
 
+    // 验证本人笔记没有片段时返回零且不写入向量。
     @Test void emptyOwnedNoteReturnsZeroWithoutWrites() {
         when(previews.findPreviews(7L, 12L)).thenReturn(Optional.of(List.of()));
         assertEquals(0, service.copyExistingChunks(7L, 12L).orElseThrow());
         verifyNoInteractions(vectors);
     }
 
+    // 验证向量写入失败会停止并且不会报告成功。
     @Test void failedWriteStopsAndDoesNotReportSuccess() {
         when(previews.findPreviews(7L, 12L)).thenReturn(Optional.of(List.of(
                 new ChunkPreview(0, "第一段"), new ChunkPreview(1, "第二段"), new ChunkPreview(2, "第三段"))));

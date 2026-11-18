@@ -43,6 +43,7 @@ class UpdateNoteHttpFailureTest {
     private String username;
     private Long userId;
 
+    // 启动测试使用的代理服务。
     private static HttpServer startProxy() {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
@@ -54,6 +55,7 @@ class UpdateNoteHttpFailureTest {
         }
     }
 
+    // 处理测试代理收到的请求。
     private static void proxy(HttpExchange exchange) throws IOException {
         try {
             byte[] requestBody = exchange.getRequestBody().readAllBytes();
@@ -82,11 +84,13 @@ class UpdateNoteHttpFailureTest {
         }
     }
 
+    // 为测试配置模拟的 Ollama 服务地址。
     @DynamicPropertySource
     static void configureOllama(DynamicPropertyRegistry registry) {
         registry.add("spring.ai.ollama.base-url", () -> "http://127.0.0.1:" + OLLAMA_PROXY.getAddress().getPort());
     }
 
+    // 创建供测试使用的用户。
     @BeforeEach
     void createUser() {
         EMBEDDING_REQUESTS.set(0);
@@ -96,6 +100,7 @@ class UpdateNoteHttpFailureTest {
         userId = jdbcTemplate.queryForObject("SELECT id FROM users WHERE username = ?", Long.class, username);
     }
 
+    // 清理本次测试创建的数据。
     @AfterEach
     void cleanup() {
         if (username != null) {
@@ -104,11 +109,13 @@ class UpdateNoteHttpFailureTest {
         }
     }
 
+    // 关闭测试代理服务。
     @AfterAll
     static void stopProxy() {
         OLLAMA_PROXY.stop(0);
     }
 
+    // 发送测试使用的文件上传请求。
     private HttpResponse<String> upload() throws Exception {
         String boundary = "TestBoundary" + UUID.randomUUID().toString().replace("-", "");
         String body = "--" + boundary + "\r\n"
@@ -126,6 +133,7 @@ class UpdateNoteHttpFailureTest {
         return CLIENT.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
     }
 
+    // 发送测试使用的更新请求。
     private HttpResponse<String> update(long noteId, String content) throws Exception {
         String body = new JsonMapper().writeValueAsString(java.util.Map.of("title", "更新测试", "content", content));
         HttpRequest request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/notes/" + noteId))
@@ -136,6 +144,7 @@ class UpdateNoteHttpFailureTest {
         return CLIENT.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
     }
 
+    // 通过上传创建测试笔记。
     private long createUploadedNote() throws Exception {
         HttpResponse<String> response = upload();
         assertEquals(201, response.statusCode());

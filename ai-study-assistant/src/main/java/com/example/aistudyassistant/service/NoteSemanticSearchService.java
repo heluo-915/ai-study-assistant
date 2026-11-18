@@ -17,11 +17,13 @@ public class NoteSemanticSearchService {
     private final NoteEmbeddingService noteEmbeddingService;
     private final EmbeddingService embeddingService;
 
+    // 初始化 NoteSemanticSearchService 实例。
     public NoteSemanticSearchService(NoteEmbeddingService noteEmbeddingService, EmbeddingService embeddingService) {
         this.noteEmbeddingService = noteEmbeddingService;
         this.embeddingService = embeddingService;
     }
 
+    // 将问题向量与当前用户的整篇笔记向量比较并返回匹配结果。
     public List<NoteSearchResult> search(Long userId, String question) {
         // 1. 查询当前用户已有向量的笔记
         List<NoteEmbedding> notes = noteEmbeddingService.findByUserId(userId);

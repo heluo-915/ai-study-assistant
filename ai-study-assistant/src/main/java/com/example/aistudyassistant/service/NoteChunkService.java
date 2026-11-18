@@ -20,6 +20,7 @@ public class NoteChunkService {
     private final TextChunkService textChunkService;
     private final EmbeddingService embeddingService;
 
+    // 初始化 NoteChunkService 实例。
     public NoteChunkService(
             TextChunkService textChunkService,
             EmbeddingService embeddingService

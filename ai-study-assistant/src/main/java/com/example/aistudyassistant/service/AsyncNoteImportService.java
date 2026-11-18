@@ -7,8 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class AsyncNoteImportService {
     private final NoteMapper notes;
     private final ChunkBuildJobService jobs;
+    // 初始化 AsyncNoteImportService 实例。
     public AsyncNoteImportService(NoteMapper notes, ChunkBuildJobService jobs) { this.notes=notes; this.jobs=jobs; }
     public record ImportedNote(Long noteId, Long jobId) {}
+    // 创建用户笔记和对应的异步构建任务。
     @Transactional
     public ImportedNote create(Long userId, String title, String content) {
         Note note=new Note(); note.setUserId(userId); note.setTitle(title); note.setContent(content);

@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class NoteVectorSyncControllerTest {
+    // 验证接口要求令牌并以登录用户限制请求范围。
     @Test void endpointsRequireTokenAndScopeRequestsToAuthenticatedUser() throws Exception {
         var tasks=mock(NoteVectorSyncTaskService.class); var mapper=mock(NoteVectorSyncTaskMapper.class);
         var jwt=mock(JwtService.class); when(jwt.parseUserId("valid")).thenReturn(7L);

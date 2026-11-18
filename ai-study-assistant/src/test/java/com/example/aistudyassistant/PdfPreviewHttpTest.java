@@ -33,6 +33,7 @@ class PdfPreviewHttpTest {
     @LocalServerPort private int port;
     @Autowired private JwtService jwtService;
 
+    // 配置当前测试所需的环境或依赖。
     @DynamicPropertySource
     static void configure(DynamicPropertyRegistry registry) {
         registry.add("spring.ai.deepseek.api-key", () -> "test-key-not-real");
@@ -40,6 +41,7 @@ class PdfPreviewHttpTest {
         registry.add("spring.datasource.password", () -> "test-unused");
     }
 
+    // 构造或发送测试使用的 PDF 数据。
     private byte[] pdf(int pageCount, int linesPerPage) throws IOException {
         try (PDDocument document = new PDDocument(); ByteArrayOutputStream output = new ByteArrayOutputStream()) {
             for (int pageIndex = 0; pageIndex < pageCount; pageIndex++) {
@@ -63,6 +65,7 @@ class PdfPreviewHttpTest {
         }
     }
 
+    // 发送测试 PDF 预览请求。
     private HttpResponse<String> preview(String filename, byte[] file, boolean authenticated) throws Exception {
         String boundary = "TestBoundary" + UUID.randomUUID().toString().replace("-", "");
         ByteArrayOutputStream body = new ByteArrayOutputStream();
@@ -78,10 +81,12 @@ class PdfPreviewHttpTest {
                 HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
     }
 
+    // 验证接口要求身份认证。
     @Test void requiresAuthentication() throws Exception {
         assertEquals(401, preview("test.pdf", pdf(1, 1), false).statusCode());
     }
 
+    // 验证提取 PDF 文本并限制预览长度。
     @Test void extractsTextAndCapsPreview() throws Exception {
         HttpResponse<String> response = preview("test.PDF", pdf(1, 35), true);
         assertEquals(200, response.statusCode());
@@ -93,6 +98,7 @@ class PdfPreviewHttpTest {
         assertTrue(json.get("truncated").asBoolean());
     }
 
+    // 验证较小的 PDF 返回未截断文本。
     @Test void smallPdfReturnsUntruncatedText() throws Exception {
         HttpResponse<String> response = preview("test.pdf", pdf(2, 1), true);
         assertEquals(200, response.statusCode());
@@ -104,6 +110,7 @@ class PdfPreviewHttpTest {
         assertFalse(json.get("truncated").asBoolean());
     }
 
+    // 验证接口拒绝无效输入。
     @Test void rejectsInvalidInputs() throws Exception {
         assertEquals(400, preview("test.txt", pdf(1, 1), true).statusCode());
         assertEquals(400, preview("test.pdf", new byte[0], true).statusCode());
@@ -112,6 +119,7 @@ class PdfPreviewHttpTest {
         assertEquals(400, preview("test.pdf", pdf(51, 0), true).statusCode());
     }
 
+    // 验证超大文件在上传处理层被拒绝。
     @Test void rejectsOversizeAtMultipartLayer() throws Exception {
         assertEquals(413, preview("test.pdf", new byte[2 * 1024 * 1024 + 1], true).statusCode());
     }

@@ -13,6 +13,7 @@ public class NoteChunkBuildService {
     private final NoteChunkService noteChunkService;
     private final NoteChunkPersistenceService noteChunkPersistenceService;
 
+    // 初始化 NoteChunkBuildService 实例。
     public NoteChunkBuildService(
             NoteService noteService,
             NoteChunkService noteChunkService,

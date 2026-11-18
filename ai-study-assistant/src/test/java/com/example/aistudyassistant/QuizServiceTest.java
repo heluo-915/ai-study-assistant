@@ -16,6 +16,7 @@ class QuizServiceTest {
          "correctAnswer":"A","explanation":"接口定义行为。"}
         """;
 
+    // 验证解析有效题目并将笔记传给模型。
     @Test
     void parsesValidQuestionAndPassesNoteToModel() {
         ChatService chat = mock(ChatService.class);
@@ -27,6 +28,7 @@ class QuizServiceTest {
         verify(chat).ask(org.mockito.ArgumentMatchers.contains("接口定义行为。"));
     }
 
+    // 验证资料不足时返回空结果。
     @Test
     void insufficientInformationReturnsEmpty() {
         ChatService chat = mock(ChatService.class);
@@ -34,6 +36,7 @@ class QuizServiceTest {
         assertTrue(new QuizService(chat).generateQuestion("短").isEmpty());
     }
 
+    // 验证拒绝格式错误或内容无效的题目。
     @Test
     void rejectsMalformedAndInvalidQuestions() {
         ChatService chat = mock(ChatService.class);

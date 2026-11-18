@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class QuizReviewControllerTest {
+    // 验证身份和归属，并确保查看题目时隐藏答案。
     @Test
     void checksAuthenticationOwnershipAndHidesAnswers() throws Exception {
         QuizReviewService service = mock(QuizReviewService.class);

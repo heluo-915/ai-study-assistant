@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class StudyTaskServiceTest {
+    // 验证仅为当前用户尚未答对的错题生成任务。
     @Test void generationSelectsOnlyCurrentUsersUnresolvedWrongQuestions() {
         var mapper=mock(StudyTaskMapper.class); var wrong=mock(WrongQuizService.class);
         var service=new StudyTaskService(mapper, wrong); var date=LocalDate.of(2026,11,16);
@@ -18,6 +19,7 @@ class StudyTaskServiceTest {
         verify(mapper).add(7L, 4L, date);
         verify(mapper).findByDate(7L, date);
     }
+    // 验证更新任务时限定当前用户。
     @Test void updateScopesTaskToUser() {
         var mapper=mock(StudyTaskMapper.class); var service=new StudyTaskService(mapper, mock(WrongQuizService.class));
         when(mapper.setCompleted(8L, 99L, true)).thenReturn(0);

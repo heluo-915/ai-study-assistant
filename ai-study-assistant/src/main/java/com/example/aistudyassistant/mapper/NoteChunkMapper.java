@@ -9,6 +9,7 @@ import java.util.List;
 @Mapper
 public interface NoteChunkMapper {
 
+    // 统计当前用户的笔记片段数量。
     @Select("SELECT COUNT(*) FROM note_chunks c JOIN notes n ON n.id=c.note_id WHERE n.user_id=#{userId}")
     int countOwnedChunks(@Param("userId") Long userId);
 

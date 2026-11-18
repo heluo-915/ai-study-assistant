@@ -13,6 +13,7 @@ public class QuizAnswerService {
     private final QuizQuestionMapper mapper;
     private final QuizAttemptMapper attemptMapper;
 
+    // 初始化 QuizAnswerService 实例。
     public QuizAnswerService(QuizQuestionMapper mapper, QuizAttemptMapper attemptMapper) {
         this.mapper = mapper;
         this.attemptMapper = attemptMapper;

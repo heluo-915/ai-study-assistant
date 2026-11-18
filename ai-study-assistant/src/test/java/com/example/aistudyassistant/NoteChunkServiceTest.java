@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 
 class NoteChunkServiceTest {
 
+    // 验证片段按顺序生成向量。
     @Test
     void generateChunksShouldEmbedEachChunkInOrder() {
         TextChunkService textChunkService = mock(TextChunkService.class);
@@ -50,6 +51,7 @@ class NoteChunkServiceTest {
         verify(embeddingService).embed("第一段");
         verify(embeddingService).embed("第二段");
     }
+    // 验证向量生成失败后停止后续处理。
     @Test
     void generateChunksShouldStopWhenEmbeddingFails() {
         TextChunkService textChunkService = mock(TextChunkService.class);

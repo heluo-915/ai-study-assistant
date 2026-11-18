@@ -17,6 +17,7 @@ public interface StudyTaskMapper {
     int add(@Param("userId") Long userId, @Param("quizId") Long quizId,
             @Param("studyDate") LocalDate studyDate);
 
+    // 查询当前用户指定日期的学习任务。
     @Select("""
         SELECT t.id, t.quiz_id AS quizId, q.question, t.study_date AS studyDate, t.completed
         FROM study_tasks t JOIN quiz_questions q ON q.id=t.quiz_id
@@ -25,6 +26,7 @@ public interface StudyTaskMapper {
         """)
     List<StudyTask> findByDate(@Param("userId") Long userId, @Param("studyDate") LocalDate studyDate);
 
+    // 设置Completed 字段。
     @Update("UPDATE study_tasks SET completed=#{completed} WHERE id=#{taskId} AND user_id=#{userId}")
     int setCompleted(@Param("userId") Long userId, @Param("taskId") Long taskId,
                      @Param("completed") boolean completed);

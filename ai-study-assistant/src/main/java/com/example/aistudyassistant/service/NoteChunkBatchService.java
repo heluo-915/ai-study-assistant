@@ -19,6 +19,7 @@ public class NoteChunkBatchService {
     private final NoteMapper noteMapper;
     private final NoteChunkBuildService noteChunkBuildService;
 
+    // 初始化 NoteChunkBatchService 实例。
     public NoteChunkBatchService(
             NoteMapper noteMapper,
             NoteChunkBuildService noteChunkBuildService

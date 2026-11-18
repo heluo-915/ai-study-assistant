@@ -14,6 +14,7 @@ public class NoteChunkAskService {
     private final NoteChunkSearchService noteChunkSearchService;
     private final ChatService chatService;
 
+    // 初始化 NoteChunkAskService 实例。
     public NoteChunkAskService(
             NoteChunkSearchService noteChunkSearchService,
             ChatService chatService

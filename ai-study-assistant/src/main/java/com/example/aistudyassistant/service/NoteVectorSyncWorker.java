@@ -15,7 +15,7 @@ public class NoteVectorSyncWorker {
     private final NoteChunkPreviewService previews;
     private final NoteChunkVectorService vectors;
 
-    public NoteVectorSyncWorker(NoteVectorSyncTaskMapper tasks,
+    /* 保存同步任务、片段查询和向量库操作所需的依赖。 */ public NoteVectorSyncWorker(NoteVectorSyncTaskMapper tasks,
                                 NoteChunkPreviewService previews,
                                 NoteChunkVectorService vectors) {
         this.tasks = tasks;

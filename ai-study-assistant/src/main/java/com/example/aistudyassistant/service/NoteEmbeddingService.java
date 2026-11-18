@@ -48,6 +48,7 @@ public class NoteEmbeddingService {
         JsonMapper jsonMapper = new JsonMapper();
         return jsonMapper.readValue(embeddingJson, float[].class);
     }
+    // 查询当前用户已有的笔记向量。
     public List<NoteEmbedding> findByUserId(Long userId) {
         // 调用 noteEmbeddingMapper 的同名方法，返回查询结果
         return noteEmbeddingMapper.findByUserId(userId);

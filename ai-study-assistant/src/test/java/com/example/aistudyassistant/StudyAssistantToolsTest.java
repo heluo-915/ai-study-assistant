@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class StudyAssistantToolsTest {
+    // 验证工具只使用服务端认证上下文中的用户身份。
     @Test void toolsUseOnlyAuthenticatedServerContext() {
         var search=mock(NoteChunkSearchService.class);
         var wrong=mock(WrongQuizService.class);
@@ -20,6 +21,7 @@ class StudyAssistantToolsTest {
         verify(wrong).findWrongQuestions(42L, false);
         verify(stats).statistics(42L);
     }
+    // 验证缺少身份时在访问数据前拒绝请求。
     @Test void missingIdentityIsRejectedBeforeAccessingData() {
         var search=mock(NoteChunkSearchService.class);
         var wrong=mock(WrongQuizService.class);

@@ -12,6 +12,7 @@ public class QuizPersistenceService {
     private final QuizQuestionMapper mapper;
     private final JsonMapper jsonMapper = new JsonMapper();
 
+    // 初始化 QuizPersistenceService 实例。
     public QuizPersistenceService(QuizQuestionMapper mapper) { this.mapper = mapper; }
 
     // 仅在笔记仍属于用户且正文未变化时保存题目。

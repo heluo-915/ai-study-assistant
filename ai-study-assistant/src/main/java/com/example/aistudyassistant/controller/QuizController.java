@@ -20,6 +20,7 @@ public class QuizController {
     private final QuizService quizService;
     private final QuizPersistenceService quizPersistenceService;
 
+    // 初始化 QuizController 实例。
     public QuizController(NoteService noteService, QuizService quizService, QuizPersistenceService quizPersistenceService) {
         this.noteService = noteService;
         this.quizService = quizService;

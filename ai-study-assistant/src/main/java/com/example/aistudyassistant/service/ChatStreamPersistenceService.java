@@ -9,6 +9,7 @@ public class ChatStreamPersistenceService {
     private final ChatSessionMapper sessionMapper;
     private final ChatMessageService messageService;
 
+    // 初始化 ChatStreamPersistenceService 实例。
     public ChatStreamPersistenceService(ChatSessionMapper sessionMapper, ChatMessageService messageService) {
         this.sessionMapper = sessionMapper;
         this.messageService = messageService;

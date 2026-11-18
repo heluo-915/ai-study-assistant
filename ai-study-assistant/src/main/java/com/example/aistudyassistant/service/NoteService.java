@@ -78,6 +78,7 @@ public class NoteService {
         return noteMapper.searchByKeyword(userId, keyword);
     }
 
+    // 为属于当前用户的笔记重新生成整篇向量。
     public boolean rebuildEmbedding(Long userId, Long noteId){
         Note note=findByIdAndUserId(userId, noteId);
         if(note==null){

@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class NoteChunkSearchServiceTest {
+    // 验证按分数顺序返回当前用户的相关片段，最多十条。
     @Test
     void returnsUpToTenRelevantChunksInScoreOrderForCurrentUser() {
         NoteChunkMapper mapper = mock(NoteChunkMapper.class);
@@ -46,6 +47,7 @@ class NoteChunkSearchServiceTest {
         verify(mapper).findByUserId(42L);
     }
 
+    // 验证用户没有片段时直接返回空列表，无需生成向量。
     @Test
     void returnsEmptyWithoutEmbeddingIfUserHasNoChunks() {
         NoteChunkMapper mapper = mock(NoteChunkMapper.class);

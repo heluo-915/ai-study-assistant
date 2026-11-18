@@ -19,6 +19,7 @@ class QdrantConnectionTest {
     @Autowired
     private VectorStore vectorStore;
 
+    // 验证向量库可以保存和检索文档。
     @Test
     void shouldSaveAndFindDocument() {
         // 给这次测试生成唯一标记，避免匹配到其他数据

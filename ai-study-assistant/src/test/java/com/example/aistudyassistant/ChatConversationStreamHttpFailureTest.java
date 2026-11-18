@@ -40,6 +40,7 @@ class ChatConversationStreamHttpFailureTest {
     private Long userId;
     private Long sessionId;
 
+    // 启动用于模拟上游服务的测试桩。
     private static HttpServer startStub() {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
@@ -49,6 +50,7 @@ class ChatConversationStreamHttpFailureTest {
         } catch (IOException e) { throw new IllegalStateException(e); }
     }
 
+    // 处理模拟服务收到的请求并返回响应。
     private static void respond(HttpExchange exchange) throws IOException {
         try {
             REQUEST_BODIES.add(new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8));
@@ -76,6 +78,7 @@ class ChatConversationStreamHttpFailureTest {
         } finally { exchange.close(); }
     }
 
+    // 为测试提供动态配置属性。
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry r) {
         r.add("spring.ai.deepseek.base-url", () -> "http://127.0.0.1:" + STUB.getAddress().getPort());
@@ -84,6 +87,7 @@ class ChatConversationStreamHttpFailureTest {
         r.add("spring.ai.retry.max-attempts", () -> 1);
     }
 
+    // 设置up 字段。
     @BeforeEach
     void setup() {
         truncate = false; cleanCloseWithoutFinish = false; finishReason = null; REQUESTS.set(0); REQUEST_BODIES.clear();
@@ -94,6 +98,7 @@ class ChatConversationStreamHttpFailureTest {
         sessionId = jdbc.queryForObject("SELECT id FROM chat_sessions WHERE user_id=?", Long.class, userId);
     }
 
+    // 清理本次测试创建的数据。
     @AfterEach
     void cleanup() {
         if (sessionId != null) {
@@ -102,8 +107,10 @@ class ChatConversationStreamHttpFailureTest {
         }
         if (username != null) jdbc.update("DELETE FROM users WHERE username=?", username);
     }
+    // 关闭测试服务并释放资源。
     @AfterAll static void stop() { STUB.stop(0); }
 
+    // 向测试接口发送提问请求。
     private HttpResponse<String> ask() throws Exception {
         var request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/chat/sessions/" + sessionId + "/messages/stream"))
                 .timeout(Duration.ofSeconds(30)).header("Authorization", "Bearer " + jwt.generateToken(userId))
@@ -113,6 +120,7 @@ class ChatConversationStreamHttpFailureTest {
         return CLIENT.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
     }
 
+    // 验证请求的失败结果。
     private void assertFailure(HttpResponse<String> response) {
         assertEquals(200, response.statusCode());
         assertTrue(response.body().contains("event:error"), response.body());
@@ -122,7 +130,9 @@ class ChatConversationStreamHttpFailureTest {
         assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM chat_messages WHERE session_id=?", Integer.class, sessionId));
     }
 
+    // 验证上游 HTTP 错误时不会保存会话消息。
     @Test void upstreamHttpErrorDoesNotSave() throws Exception { assertFailure(ask()); }
+    // 验证上游连接中断时不会保存会话消息。
     @Test void interruptedUpstreamDoesNotSave() throws Exception {
         truncate = true;
         var response = ask();
@@ -131,6 +141,7 @@ class ChatConversationStreamHttpFailureTest {
         assertTrue(response.body().contains("data:partial"), response.body());
     }
 
+    // 验证缺少完成标记时不会保存会话消息。
     @Test void missingFinishMarkerDoesNotSave() throws Exception {
         cleanCloseWithoutFinish = true;
         var response = ask();
@@ -138,12 +149,14 @@ class ChatConversationStreamHttpFailureTest {
         assertTrue(response.body().contains("data:partial"), response.body());
     }
 
+    // 验证输出达到模型限制时不会保存不完整回答。
     @Test void tokenLimitDoesNotSavePartialAnswer() throws Exception {
         cleanCloseWithoutFinish = true;
         finishReason = "length";
         assertFailure(ask());
     }
 
+    // 验证正常完成时保存用户消息和助手消息。
     @Test void normalFinishSavesBothMessages() throws Exception {
         cleanCloseWithoutFinish = true;
         finishReason = "stop";
@@ -155,6 +168,7 @@ class ChatConversationStreamHttpFailureTest {
         assertEquals(2, jdbc.queryForObject("SELECT COUNT(*) FROM chat_messages WHERE session_id=?", Integer.class, sessionId));
     }
 
+    // 验证第二次请求按正确顺序携带第一轮对话。
     @Test void secondRequestContainsFirstTurnInCorrectOrder() throws Exception {
         cleanCloseWithoutFinish = true;
         finishReason = "stop";

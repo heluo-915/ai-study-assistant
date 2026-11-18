@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class QuizStatisticsController {
     private final QuizStatisticsService service;
+    // 初始化 QuizStatisticsController 实例。
     public QuizStatisticsController(QuizStatisticsService service) { this.service = service; }
 
     // 返回当前用户的练习次数统计。

@@ -8,17 +8,20 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.*;
 
 class NoteVectorSyncSchedulerTest {
+    // 验证调度器派发一条待处理任务。
     @Test void dispatchesOnePendingTask() {
         var tasks=mock(NoteVectorSyncTaskMapper.class); var worker=mock(NoteVectorSyncWorker.class);
         when(tasks.nextPending()).thenReturn(new NoteVectorSyncTaskKey(7L,12L));
         new NoteVectorSyncScheduler(tasks,worker).processNext();
         verify(worker).processPending(7L,12L);
     }
+    // 验证没有任务时不会调用执行者。
     @Test void noTaskDoesNotCallWorker() {
         var tasks=mock(NoteVectorSyncTaskMapper.class); var worker=mock(NoteVectorSyncWorker.class);
         new NoteVectorSyncScheduler(tasks,worker).processNext();
         verifyNoInteractions(worker);
     }
+    // 验证执行失败不会阻止调度器后续运行。
     @Test void workerFailureDoesNotStopNextSchedulerRuns() {
         var tasks=mock(NoteVectorSyncTaskMapper.class); var worker=mock(NoteVectorSyncWorker.class);
         when(tasks.nextPending()).thenReturn(new NoteVectorSyncTaskKey(7L,12L));

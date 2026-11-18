@@ -14,6 +14,7 @@ public class NoteCreationService {
     private final NoteService noteService;
     private final NoteChunkBuildService noteChunkBuildService;
 
+    // 初始化 NoteCreationService 实例。
     public NoteCreationService(
             NoteService noteService,
             NoteChunkBuildService noteChunkBuildService

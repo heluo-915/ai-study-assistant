@@ -14,6 +14,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class ChatStreamServiceTest {
+    // 验证成功时输出消息片段和完成事件。
     @Test
     void emitsChunksAndDoneOnlyOnSuccess() {
         ChatModel model = mock(ChatModel.class);
@@ -30,6 +31,7 @@ class ChatStreamServiceTest {
         assertEquals("done", events.get(2).event());
     }
 
+    // 验证未完成的输出不会发送完成事件。
     @Test
     void unfinishedOutputMustNotSendDone() {
         ChatModel model = mock(ChatModel.class);
@@ -40,6 +42,7 @@ class ChatStreamServiceTest {
         assertEquals(java.util.List.of("message", "error"), events.stream().map(e -> e.event()).toList());
     }
 
+    // 验证失败时发送错误事件且不发送完成事件。
     @Test
     void emitsErrorWithoutDoneAfterFailure() {
         ChatModel model = mock(ChatModel.class);

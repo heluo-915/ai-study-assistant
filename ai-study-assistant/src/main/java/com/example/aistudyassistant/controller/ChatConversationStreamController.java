@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 @RestController
 public class ChatConversationStreamController {
     private final ChatConversationStreamService service;
+    // 初始化 ChatConversationStreamController 实例。
     public ChatConversationStreamController(ChatConversationStreamService service) { this.service = service; }
 
     // 单轮问题以 SSE 返回，成功保存后发送 done。

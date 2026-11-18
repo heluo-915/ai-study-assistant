@@ -13,6 +13,7 @@ public class NoteChunkPreviewService {
     private final NoteService noteService;
     private final NoteChunkMapper noteChunkMapper;
 
+    // 初始化 NoteChunkPreviewService 实例。
     public NoteChunkPreviewService(
             NoteService noteService,
             NoteChunkMapper noteChunkMapper

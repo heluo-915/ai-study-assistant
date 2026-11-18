@@ -15,6 +15,7 @@ class ChatStreamPersistenceServiceTest {
     @Autowired ChatStreamPersistenceService service;
     @Autowired JdbcTemplate jdbc;
 
+    // 验证只为所属会话保存两条消息。
     @Test
     void savesBothMessagesOnlyForOwnedSession() {
         String username = "stream_test_" + UUID.randomUUID().toString().substring(0, 8);

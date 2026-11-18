@@ -16,6 +16,7 @@ public class QuizService {
     private final ChatService chatService;
     private final JsonMapper jsonMapper = new JsonMapper();
 
+    // 初始化 QuizService 实例。
     public QuizService(ChatService chatService) {
         this.chatService = chatService;
     }
@@ -88,6 +89,7 @@ public class QuizService {
         }
     }
 
+    // 判断 JSON 节点是否为非空文本。
     private boolean isNonBlankText(JsonNode node) {
         return node != null && node.isString() && !node.asString().isBlank();
     }

@@ -30,6 +30,7 @@ class UploadNotePartialFailureTest {
     private String username;
     private Long userId;
 
+    // 创建供测试使用的用户。
     @BeforeEach
     void createUser() {
         username = "upload_test_" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
@@ -37,6 +38,7 @@ class UploadNotePartialFailureTest {
         userId = jdbcTemplate.queryForObject("SELECT id FROM users WHERE username = ?", Long.class, username);
     }
 
+    // 清理本次测试创建的数据。
     @AfterEach
     void cleanup() {
         if (username != null) {

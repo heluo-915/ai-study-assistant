@@ -15,7 +15,7 @@ public class NoteUpdatePersistenceService {
     private final NoteMapper notes;
     private final NoteEmbeddingService embeddings;
     private final NoteChunkPersistenceService chunks;
-    public NoteUpdatePersistenceService(NoteMapper notes, NoteEmbeddingService embeddings,
+    /* 保存更新笔记、整篇向量和片段所需的持久化依赖。 */ public NoteUpdatePersistenceService(NoteMapper notes, NoteEmbeddingService embeddings,
                                         NoteChunkPersistenceService chunks) {
         this.notes=notes; this.embeddings=embeddings; this.chunks=chunks;
     }

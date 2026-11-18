@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class QuizReviewController {
     private final QuizReviewService service;
+    // 初始化 QuizReviewController 实例。
     public QuizReviewController(QuizReviewService service) { this.service = service; }
 
     // 重练时查看当前用户自己的题目，不返回答案和解析。

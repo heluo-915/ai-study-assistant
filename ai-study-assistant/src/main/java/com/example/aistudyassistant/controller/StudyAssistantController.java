@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class StudyAssistantController {
     private final StudyAssistantService service;
+    // 初始化 StudyAssistantController 实例。
     public StudyAssistantController(StudyAssistantService service) { this.service=service; }
+    // 校验请求并调用当前用户的学习助手。
     @PostMapping("/study/assistant")
     public ResponseEntity<String> ask(@RequestAttribute("userId") Long userId, @RequestBody ChatRequest request) {
         String question=request.getMessage();
